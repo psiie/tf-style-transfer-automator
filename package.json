@@ -6,6 +6,7 @@
   "scripts": {
     "download": "node download/index.js",
     "process": "node process/index.js",
+    "forever:process": "forever -l forever.log process/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
