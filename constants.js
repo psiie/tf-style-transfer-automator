@@ -5,6 +5,7 @@ const PATHS = {
   STYLES: path.join(__dirname, 'styles'),
   OUT: path.join(__dirname, 'out'),
 };
+const DB_PATH = path.join(__dirname, 'processed_images.db');
 const PARALLEL_LIMIT = 4;
 const REDDIT_RSS_FEEDS = {
   CONTENT: [
@@ -26,4 +27,5 @@ module.exports = {
   PATHS,
   PARALLEL_LIMIT,
   REDDIT_RSS_FEEDS,
+  DB_PATH,
 };
