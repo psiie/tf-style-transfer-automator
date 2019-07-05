@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const Datastore = require('nedb');
 const getDirectories = require('./getDirectories');
+const { command } = require('./command');
 const {
   PATHS,
   DB_PATH,
@@ -8,58 +9,62 @@ const {
 
 const db = new Datastore({ filename: DB_PATH, autoload: true });
 const { contentDir, stylesDir } = getDirectories();
-let cCount = 0;
-let sCount = 0;
+let cIndex = 0;
+let sIndex = 0;
 
 Object.values(PATHS).forEach(PATH => fs.mkdirp(PATH));
 
 // ---------------------------------------------------------------------------------- //
 
 function filenameSelector() {
-  const contentImg = contentDir[cCount] || {};
-  const styleImg = stylesDir[sCount] || {};
+  const contentImg = contentDir[cIndex] || {};
+  const styleImg = stylesDir[sIndex] || {};
 
   return [
-    contentImg.filename || null,
-    styleImg.filename || null,
+    contentImg.filename,
+    styleImg.filename,
   ];
 }
 
 function foundImagesToProcess() {
   const [ content, style ] = filenameSelector();
 
-  console.log('2) foundImagesToProcess()', content, style);
-
   db.insert({ content, style }, (err, newDoc) => {
-    if (err) console.log('Error, db.insert():', err);
-    console.log('newDoc', newDoc);
+    if (err) {
+      console.log('Error, db.insert():', err);
+      return;
+    }
+
+    command('sleep 2')
+      .then(([stdout, stderr]) => {
+        console.log('stdout', stdout);
+        console.log('stderr', stderr);
+        console.log(content, style);
+        // process quits here
+      })
+      .catch(err => console.log(err));
   });
 }
 
 function checkIfExists() {
   return new Promise((resolve, reject) => {
+    cIndex = parseInt(Math.random() * contentDir.length, 10);
+    sIndex = parseInt(Math.random() * stylesDir.length, 10);
+
     const [ content, style ] = filenameSelector();
-    if (!content || !style) reject('Fatal Error. Tried to search undefined filenames');
+    if (!content || !style) reject(`
+      Fatal Error. Tried to search undefined filenames:
+      ${cIndex}/${contentDir.length}
+      ${sIndex}/${stylesDir.length}
+      ${content}
+      ${style}
+    `);
 
     db.findOne({ content, style }, (error, doc) => {
       if (error) console.log('error in db.find():', content, style, error);
 
-      if (doc) {
-        console.log('1) found doc');
-        if (cCount < contentDir.length) {
-          cCount++;
-        } else {
-          cCount = 0;
-          if (sCount < stylesDir.length) sCount++;
-          else reject('no more images to process')
-        }
-
-
-        resolve(true);
-      } else {
-        console.log('1) ! did not find doc :)');
-        resolve(false);
-      }
+      if (doc) resolve(true); // continue searching
+      else resolve(false); // found combo to use
     })
   });
 }

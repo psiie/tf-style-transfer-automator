@@ -1,3 +1,4 @@
+const childProcess = require('child_process');
 
 function command(cmd) {
   return new Promise((resolve, reject) => {
