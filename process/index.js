@@ -37,12 +37,14 @@ function foundImagesToProcess() {
       return;
     }
 
+    const width = 1000;
+    const iterations = 1000;
     const neuralStylesExecutablePath = path.join(NEURAL_STYLES_INSTALL_PATH, 'neural_style.py');
     const networkPathVGG = path.join(NEURAL_STYLES_INSTALL_PATH, 'imagenet-vgg-verydeep-19.mat');
     const contentPath = path.join(PATHS.CONTENT, content);
     const checkpointPath = path.join(PATHS.CHECKPOINTS, 'checkpoint-%05d.jpg');
     const stylePath = path.join(PATHS.STYLES, style);
-    const outFilename = `c(${content})_s(${style})_w750_i1000.jpg`;
+    const outFilename = `c(${content})_s(${style})_w${width}_i${iterations}.jpg`;
     const outPath = path.join(PATHS.OUT, outFilename);
 
     const cmd = `python ${neuralStylesExecutablePath} \
@@ -50,8 +52,8 @@ function foundImagesToProcess() {
       --network "${networkPathVGG}" \
       --checkpoint-iterations 50 \
       --overwrite \
-      --width 750 \
-      --iterations 1000 \
+      --width ${width} \
+      --iterations ${iterations} \
       --content "${contentPath}" \
       --styles ${stylePath} \
       --output "${outPath}" \
