@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "download": "node download/index.js",
+    "process": "node process/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
