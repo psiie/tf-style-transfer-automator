@@ -1,10 +1,12 @@
 const fs = require('fs-extra');
 const Datastore = require('nedb');
+const path = require('path');
 const getDirectories = require('./getDirectories');
 const { command } = require('./command');
 const {
   PATHS,
   DB_PATH,
+  NEURAL_STYLES_INSTALL_PATH,
 } = require('../constants');
 
 const db = new Datastore({ filename: DB_PATH, autoload: true });
@@ -35,7 +37,28 @@ function foundImagesToProcess() {
       return;
     }
 
-    command('sleep 2')
+    const neuralStylesExecutablePath = path.join(NEURAL_STYLES_INSTALL_PATH, 'neural_style.py');
+    const networkPathVGG = path.join(NEURAL_STYLES_INSTALL_PATH, 'imagenet-vgg-verydeep-19.mat');
+    const contentPath = path.join(PATHS.CONTENT, content);
+    const checkpointPath = path.join(PATHS.CHECKPOINTS, 'checkpoint-%05d.jpg');
+    const stylePath = path.join(PATHS.STYLES, style);
+    const outFilename = `c(${content})_s(${style})_w750_i1000.jpg`;
+    const outPath = path.join(PATHS.OUT, outFilename);
+
+    const cmd = `python ${neuralStylesExecutablePath} \
+      --checkpoint-output "${checkpointPath}" \
+      --network "${networkPathVGG}" \
+      --checkpoint-iterations 50 \
+      --overwrite \
+      --width 750 \
+      --iterations 1000 \
+      --content "${contentPath}" \
+      --styles ${stylePath} \
+      --output "${outPath}" \
+    `;
+
+    console.log('running command', cmd);
+    command(cmd)
       .then(([stdout, stderr]) => {
         console.log('stdout', stdout);
         console.log('stderr', stderr);

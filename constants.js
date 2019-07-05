@@ -4,8 +4,10 @@ const PATHS = {
   CONTENT: path.join(__dirname, 'content'),
   STYLES: path.join(__dirname, 'styles'),
   OUT: path.join(__dirname, 'out'),
+  CHECKPOINTS: path.join(__dirname, 'checkpoints'),
 };
 const DB_PATH = path.join(__dirname, 'processed_images.db');
+const NEURAL_STYLES_INSTALL_PATH = path.resolve('/home/darkenvy/projects/neural-style');
 const PARALLEL_LIMIT = 4;
 const REDDIT_RSS_FEEDS = {
   CONTENT: [
@@ -28,4 +30,5 @@ module.exports = {
   PARALLEL_LIMIT,
   REDDIT_RSS_FEEDS,
   DB_PATH,
+  NEURAL_STYLES_INSTALL_PATH,
 };
