@@ -4,6 +4,7 @@ const Url = require('url-parse');
 const fs = require('fs-extra');
 const path = require('path');
 const get = require('get');
+const Datastore = require('nedb');
 let Parser = require('rss-parser');
 let parser = new Parser();
 const {
@@ -11,6 +12,9 @@ const {
   PARALLEL_LIMIT,
   REDDIT_RSS_FEEDS,
 } = require('../constants');
+
+const IMAGE_METADATA_DB = path.join(__dirname, '../', 'imageMetadata.db');
+const db = new Datastore({ filename: IMAGE_METADATA_DB, autoload: true });
 
 // ----------------------------- Init ---------------------------------------------- //
 
@@ -77,9 +81,22 @@ function getImageListFromRedditRSS(rssLinks) {
         parser.parseURL(url).then(feed => {
           feed.items.forEach(item => {
             const $ = cheerio.load(item.content);
-            $('a').each((idx, item) => {
-              const innerText = $(item).text();
-              if (innerText === '[link]') imageList.push(item.attribs.href);
+            $('a').each((idx, itemEl) => {
+              const innerText = $(itemEl).text();
+              if (innerText !== '[link]') return;
+
+              const href = itemEl.attribs.href;
+              imageList.push(href);
+              db.findOne({ href }, (err, doc) => {
+                if (err) console.log('error findOne()', href);
+
+                const parsedUrl = new Url(href);
+                const filename = parsedUrl.pathname.split('/').slice(-1)[0];
+                const { author } = item;
+                const { title } = feed
+                if (!filename) return;
+                if (!doc) db.insert({ filename, author, title, href });
+              });
             });
           });
   
