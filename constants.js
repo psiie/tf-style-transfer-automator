@@ -8,6 +8,8 @@ const PATHS = {
 };
 const DB_PATH = path.join(__dirname, 'processed_images.db');
 const NEURAL_STYLES_INSTALL_PATH = path.resolve('/home/darkenvy/projects/neural-style');
+const TWEETED_OUT_PATH = path.join(PATHS.OUT, 'tweeted');
+const IMAGE_METADATA_DB = path.join(__dirname, 'imageMetadata.db');
 const PARALLEL_LIMIT = 4;
 const REDDIT_RSS_FEEDS = {
   CONTENT: [
@@ -31,4 +33,6 @@ module.exports = {
   REDDIT_RSS_FEEDS,
   DB_PATH,
   NEURAL_STYLES_INSTALL_PATH,
+  IMAGE_METADATA_DB,
+  TWEETED_OUT_PATH,
 };

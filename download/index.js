@@ -11,9 +11,9 @@ const {
   PATHS,
   PARALLEL_LIMIT,
   REDDIT_RSS_FEEDS,
+  IMAGE_METADATA_DB,
 } = require('../constants');
 
-const IMAGE_METADATA_DB = path.join(__dirname, '../', 'imageMetadata.db');
 const db = new Datastore({ filename: IMAGE_METADATA_DB, autoload: true });
 
 // ----------------------------- Init ---------------------------------------------- //

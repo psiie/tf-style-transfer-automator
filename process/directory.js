@@ -33,4 +33,7 @@ function getDirectories() {
   };
 }
 
-module.exports = getDirectories;
+module.exports = {
+  extendFileInfo,
+  getDirectories,
+};

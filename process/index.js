@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const Datastore = require('nedb');
 const path = require('path');
-const getDirectories = require('./getDirectories');
+const { getDirectories } = require('./directory');
 const { command } = require('./command');
 const {
   PATHS,
