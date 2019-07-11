@@ -3,6 +3,7 @@ out/
 content/
 styles/
 checkpoints/
+imageMetadata.db
 
 # Created by https://www.gitignore.io/api/osx,node,linux
 # Edit at https://www.gitignore.io/?templates=osx,node,linux
