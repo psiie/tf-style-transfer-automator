@@ -4,6 +4,7 @@ const PATHS = {
   CONTENT: path.join(__dirname, 'content'),
   STYLES: path.join(__dirname, 'styles'),
   OUT: path.join(__dirname, 'out'),
+  OUT2: path.join(__dirname, 'out2'),
   CHECKPOINTS: path.join(__dirname, 'checkpoints'),
 };
 const DB_PATH = path.join(__dirname, 'processed_images.db');

@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const { extendFileInfo } = require('../process/directory');
 const Datastore = require('nedb');
+const appender = require('../appender');
 const Twit = require('twit');
 const {
   PATHS,
@@ -22,7 +23,8 @@ var twitter = new Twit({
 
 // ----------------------------- Init ---------------------------------------------- //
 
-fs.mkdirpSync(TWEETED_OUT_PATH);
+fs.mkdirpSync(TWEETED_OUT_PATH);  
+fs.mkdirpSync(PATHS.OUT2);  
 
 // -------------------------------------------------------------------------- //
 
@@ -79,15 +81,24 @@ function getOutDirectory() {
     });
 }
 
-// -------------------------------------------------------------------------- //
-
-function loadImage(filename) {
+function readFileFromDisk(filename) {
   return new Promise((resolve, reject) => {
     const filepath = path.join(PATHS.OUT, filename);
     fs.readFile(filepath, (err, buffer) => {
       if (err) reject('fs.readFile() error: ' + err);
       else resolve(buffer);
     });
+  });
+}
+
+// -------------------------------------------------------------------------- //
+
+function prepareImage(filename) {
+  return new Promise((resolve, reject) => {
+    appender(filename)
+      .then(readFileFromDisk)
+      .then(resolve)
+      .catch(reject)
   });
 }
 
@@ -114,7 +125,7 @@ function composeTweetText(metadata = {}, file = {}) {
   if (width) text += `width(${width}) `;
   if (iterations) text += `iterations(${iterations})`;
 
-  return text;
+  return text.slice(0, 280);
 }
 
 function getMetadata(nextFile) {
@@ -147,12 +158,14 @@ function main() {
   const nextFile = outDirectory.slice(0,1)[0];
 
   const preflight = [
-    loadImage(nextFile.filename),
+    prepareImage(nextFile.filename),
     getMetadata(nextFile),
   ];
 
   Promise.all(preflight).then(([buffer, metadata]) => {
     const tweetTxt = composeTweetText(metadata, nextFile);
+
+    console.log('done', buffer);
 
     mediaUpload(buffer) // upload img first
       .then(mediaIds => tweet(tweetTxt, mediaIds)) // here is the actual tweeting
