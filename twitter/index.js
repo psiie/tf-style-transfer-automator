@@ -81,9 +81,9 @@ function getOutDirectory() {
     });
 }
 
-function readFileFromDisk(filename) {
+function readFileFromDisk(filepath) {
   return new Promise((resolve, reject) => {
-    const filepath = path.join(PATHS.OUT, filename);
+    console.log('about to read file from disk', filepath);
     fs.readFile(filepath, (err, buffer) => {
       if (err) reject('fs.readFile() error: ' + err);
       else resolve(buffer);
@@ -163,9 +163,12 @@ function main() {
   ];
 
   Promise.all(preflight).then(([buffer, metadata]) => {
+    console.log('preflight done')
     const tweetTxt = composeTweetText(metadata, nextFile);
+    console.log('tweet text prepared')
 
-    console.log('done', buffer);
+    console.log('done', buffer, metadata);
+
 
     mediaUpload(buffer) // upload img first
       .then(mediaIds => tweet(tweetTxt, mediaIds)) // here is the actual tweeting
