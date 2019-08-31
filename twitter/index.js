@@ -21,6 +21,33 @@ var twitter = new Twit({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
+const hashtags = [
+  'neuralnetworks',
+  'deeplearning',
+  'art',
+  'MachineLearning',
+  'ai',
+  'gan',
+  'tensorflow',
+  'neuralstyletransfer',
+  'mixedmedia',
+  'drawing',
+  'sketch',
+  'abstract',
+  'painting',
+  'style',
+  'digitalart',
+  'artstyle',
+  'python',
+  'javascript',
+  'js',
+  'generated',
+  'programmatic',
+  'procedural',
+  'artificial',
+  'beauty',
+];
+
 // ----------------------------- Init ---------------------------------------------- //
 
 fs.mkdirpSync(TWEETED_OUT_PATH);  
@@ -106,7 +133,11 @@ function composeTweetText(metadata = {}, file = {}) {
   const { width, iterations } = file;
   const content = metadata.content || {};
   const style = metadata.style || {};
+  let newHashtags = [...hashtags];
   let text = '';
+
+  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + ' ';
+  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + '\n';
 
   if (content.author) text += `Content Author ${content.author}\n`;
   if (content.href) text += `  ${content.href}`;
