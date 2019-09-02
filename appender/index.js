@@ -46,10 +46,35 @@ function processImage(tmpPath, neuralFile, contentFile, styleFile, bottomFile, f
     ];
   
     // we are using eachOfSeries in a way that is not initially intended.
-    const fn = (action, key, callback) => action().then(() => callback());
+    const fn = (action, key, callback) => (
+      action()
+        .then(() => callback())
+        .catch(err => callback(err))
+    );
+
+
     async.eachOfSeries(actions, fn, (err) => {
-      if (err) reject();
-      else resolve(finalFile);
+      if (!err) resolve(finalFile);
+      else {
+        console.log('Error. Aborting this image combo');
+        const neuralFilePath = path.join(PATHS.OUT, neuralFile);
+        const neuralFilePathOut = path.join(PATHS.FAILED, neuralFile);
+        const contentFilepath = path.join(PATHS.CONTENT, contentFile);
+        const contentFilepathOut = path.join(PATHS.FAILED, contentFile);
+        const styleFilepath = path.join(PATHS.STYLES, styleFile);
+        const styleFilepathOut = path.join(PATHS.FAILED, styleFile);
+
+        // move all files
+        fs.move(neuralFilePath, neuralFilePathOut, err => console.log(err));
+        fs.move(contentFilepath, contentFilepathOut, err => console.log(err));
+        fs.move(contestyleFilepathntFilepath, styleFilepathOut, err => console.log(err));
+        
+        // last two can be deleted
+        fs.rm(bottomFile, err => console.log(err));
+        fs.rm(finalFile, err => console.log(err));
+
+        reject(err);
+      }
     });
   });
 }

@@ -52,6 +52,7 @@ const hashtags = [
 
 fs.mkdirpSync(TWEETED_OUT_PATH);  
 fs.mkdirpSync(PATHS.OUT2);  
+fs.mkdirpSync(PATHS.FAILED);  
 
 // -------------------------------------------------------------------------- //
 
@@ -176,7 +177,7 @@ function getMetadata(nextFile) {
         callback();
       });
     };
-  
+    
     async.each(Object.keys(results), lookup, err => {
       if (err) reject('error in async.each(): ' +  err);
       else resolve(results);

@@ -6,6 +6,7 @@ const PATHS = {
   OUT: path.join(__dirname, 'out'),
   OUT2: path.join(__dirname, 'out2'),
   CHECKPOINTS: path.join(__dirname, 'checkpoints'),
+  FAILED: path.join(__dirname, 'failed'),
 };
 const DB_PATH = path.join(__dirname, 'processed_images.db');
 const NEURAL_STYLES_INSTALL_PATH = path.resolve('/home/darkenvy/projects/neural-style');
