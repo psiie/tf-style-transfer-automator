@@ -137,25 +137,24 @@ function composeTweetText(metadata = {}, file = {}) {
   let newHashtags = [...hashtags];
   let text = '';
 
-  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + ' ';
-  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + '\n';
-
-  if (content.author) text += `Content Author ${content.author}\n`;
-  if (content.href) text += `  ${content.href}`;
-
-  text += '\n';
-  if (style.author) text += `Style Author ${style.author}\n`;
-  if (style.href) text += `  ${style.href}`;
-
+  text += 'Randomly Art generated';
+  if (content.author || style.author) text += ' from ';
+  if (content.author) text += content.author;
+  if (content.author && style.author) text += ' and ';
+  if (style.author) text += style.author;
   text += '\n\n';
-  if (content.title || style.title) text += `Subreddits\n`;
+
+  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + ' ';
+  text = text + '#' + newHashtags.splice(Math.random()*newHashtags.length ,1) + '\n\n';
+  
+  text += 'Sources\n';
+  if (content.href) text += `  ${content.href}`;
+  if (style.href) text += `  ${style.href}`;
+  text += '\n\n';
+
+  // subreddit names
   if (content.title) text += `${content.title}\n`;
   if (style.title) text += `${style.title}`;
-
-  text += '\n\n';
-  if (width || iterations) text += `settings: `;
-  if (width) text += `width(${width}) `;
-  if (iterations) text += `iterations(${iterations})`;
 
   return text.slice(0, 280);
 }
