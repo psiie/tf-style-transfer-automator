@@ -1,5 +1,4 @@
 const path = require('path');
-require('dotenv').config();
 
 const PATHS = {
   CONTENT: path.join(__dirname, 'content'),
@@ -10,7 +9,7 @@ const PATHS = {
   FAILED: path.join(__dirname, 'failed'),
 };
 const DB_PATH = path.join(__dirname, 'processed_images.db');
-const NEURAL_STYLES_INSTALL_PATH = path.resolve(process.env.NEURAL_STYLES_PATH);
+const NEURAL_STYLES_INSTALL_PATH = path.resolve(__dirname, '..', 'neural-style');
 const TWEETED_OUT_PATH = path.join(PATHS.OUT, 'tweeted');
 const IMAGE_METADATA_DB = path.join(__dirname, 'imageMetadata.db');
 const PARALLEL_LIMIT = 4;
