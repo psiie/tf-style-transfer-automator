@@ -13,6 +13,7 @@ const db = new Datastore({ filename: DB_PATH, autoload: true });
 const { contentDir, stylesDir } = getDirectories();
 let cIndex = 0;
 let sIndex = 0;
+let repeats = 0;
 
 Object.values(PATHS).forEach(PATH => fs.mkdirp(PATH));
 
@@ -47,7 +48,7 @@ function foundImagesToProcess() {
     const outFilename = `c(${content})_s(${style})_w${width}_i${iterations}.jpg`;
     const outPath = path.join(PATHS.OUT, outFilename);
 
-    const cmd = `python ${neuralStylesExecutablePath} \
+    const cmd = `python3 ${neuralStylesExecutablePath} \
       --checkpoint-output "${checkpointPath}" \
       --network "${networkPathVGG}" \
       --checkpoint-iterations 50 \
@@ -95,8 +96,21 @@ function checkIfExists() {
 }
 
 function loop() {
+  if (repeats >= 1000) {
+    console.log('Could not find new combination in 1000 tries. Quitting');
+    return;
+  }
+
   checkIfExists() // we want to find an image combo that does not exist
-    .then(doc => doc ? loop() : foundImagesToProcess())
+    .then(doc => {
+      if (doc) {
+        repeats++;
+        loop();
+      } else {
+        repeats = 0;
+        foundImagesToProcess();
+      }
+    })
     .catch(err => console.log(err));
 }
 
