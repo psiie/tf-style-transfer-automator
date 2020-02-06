@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const Datastore = require('nedb');
 const path = require('path');
+const argv = require('yargs').argv
 const { getDirectories } = require('./directory');
 const { command } = require('./command');
 const {
@@ -13,9 +14,12 @@ const db = new Datastore({ filename: DB_PATH, autoload: true });
 const { contentDir, stylesDir } = getDirectories();
 let cIndex = 0;
 let sIndex = 0;
-let repeats = 0;
+let failedAttempts = 0;
+let repeats = argv.repeat || 0;
 
 Object.values(PATHS).forEach(PATH => fs.mkdirp(PATH));
+
+if (repeats) console.log('Will repeat', repeats, 'times');
 
 // ---------------------------------------------------------------------------------- //
 
@@ -67,6 +71,11 @@ function foundImagesToProcess() {
         console.log('stderr', stderr);
         console.log(content, style);
         // process quits here
+
+        if (repeats > 0) {
+          repeats--;
+          loop();
+        }
       })
       .catch(err => console.log(err));
   });
@@ -96,7 +105,7 @@ function checkIfExists() {
 }
 
 function loop() {
-  if (repeats >= 1000) {
+  if (failedAttempts >= 1000) {
     console.log('Could not find new combination in 1000 tries. Quitting');
     return;
   }
@@ -104,10 +113,10 @@ function loop() {
   checkIfExists() // we want to find an image combo that does not exist
     .then(doc => {
       if (doc) {
-        repeats++;
+        failedAttempts++;
         loop();
       } else {
-        repeats = 0;
+        failedAttempts = 0;
         foundImagesToProcess();
       }
     })
