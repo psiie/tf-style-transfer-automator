@@ -1,4 +1,5 @@
 const path = require('path');
+const REDDIT_RSS_FEEDS = require('./download/reddit_rss_feeds.json');
 
 const PATHS = {
   CONTENT: path.join(__dirname, 'content'),
@@ -13,21 +14,7 @@ const NEURAL_STYLES_INSTALL_PATH = path.resolve(__dirname, '..', 'neural-style')
 const TWEETED_OUT_PATH = path.join(PATHS.OUT, 'tweeted');
 const IMAGE_METADATA_DB = path.join(__dirname, 'imageMetadata.db');
 const PARALLEL_LIMIT = 4;
-const REDDIT_RSS_FEEDS = {
-  CONTENT: [
-    'https://www.reddit.com/r/photographs.rss',
-    'https://www.reddit.com/r/photocritique.rss',
-    'https://www.reddit.com/r/analog.rss',
-    'https://www.reddit.com/r/itookapicture.rss',
-    'https://www.reddit.com/r/postprocessing.rss',
-    'https://www.reddit.com/r/pics.rss',
-    'https://www.reddit.com/r/ExposurePorn.rss',
-  ],
-  STYLES: [
-    'https://www.reddit.com/r/Art.rss',
-    'https://www.reddit.com/r/SpecArt.rss',
-  ],
-};
+
 
 module.exports = {
   PATHS,
