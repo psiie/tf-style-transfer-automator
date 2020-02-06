@@ -73,6 +73,7 @@ function foundImagesToProcess() {
         // process quits here
 
         if (repeats > 0) {
+          console.log('repeating', repeats, 'more times');
           repeats--;
           loop();
         }
